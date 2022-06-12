@@ -1,0 +1,29 @@
+#! /usr/bin/env ruby
+# frozen_string_literal: true
+
+# ## example
+# ```
+# rename-video-with-caption *.mov
+# ```
+#
+# - uses the `description` exif field to make `name.mov` into
+#   `name - description.mov`
+# - if `- ...` already exists in the file name, it will be replaced
+
+require 'shellwords'
+
+ARGV.each do |file|
+  ext = File.extname(file)
+  base = File.basename(file, ext).gsub(/ *- .*/, '')
+  dir = File.dirname(file)
+
+  unless File.exist?(file)
+    warn "WARN: #{file.shellescape} is not a file"
+    next
+  end
+
+  description = `exiftool -description #{file.shellescape}`.match(/: (.*)/)[1]
+  warn "WARN: could not get description from #{file.shellescape}" unless $? == 0
+
+  File.rename file, File.join(dir, "#{base} - #{description}#{ext}")
+end

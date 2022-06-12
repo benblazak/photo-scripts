@@ -1,0 +1,57 @@
+#! /usr/bin/env ruby
+# frozen_string_literal: true
+
+# ## example
+# ```
+# copy-caption-from-xmp-to-video *.mov
+# ```
+#
+# each .mov must have a .xmp with the same root filename.
+#
+#
+# ## notes
+#
+# at the moment (2022 jun 11), most of my dance videos from my iphone have a
+# caption, and no other edits.
+# - if i airdrop from ios, caption is maintained.  but i currently don't have
+#   all the videos downloaded on my iphone (because of space), and it hangs or
+#   takes a very long time to download them on demand before sending.
+# - if i airdrop from ios with "all photos data", the caption is not present
+#   (tested with a smaller file that hasn't been offloaded to icloud)
+# - if i export from mac photos, it wants to transcode (lol)
+# - if i export original from mac photos, it does exactly that, and doesn't
+#   include the caption
+#   - but if i mark "Export IPTC as XMP", the caption is in the xmp file :)
+#
+# so in this specific instance, the best thing to do appears to be to export
+# original from mac photos with xmp, and copy the caption from the xmp file to
+# the video metadata with `exiftool`
+#
+# - for videos, it looks like ios puts the caption in `Description`
+# - for images, it looks like it puts it in `ImageDescription` and
+#   `Caption-Abstract`.
+#
+# ## references
+# - https://exiftool.org/TagNames/EXIF.html
+
+require 'shellwords'
+
+ARGV.each do |file|
+  ext = File.extname(file)
+  base = File.basename(file, ext)
+  xmp = "#{base}.xmp"
+
+  unless File.exist?(file)
+    warn "WARN: #{file.shellescape} is not a file"
+    next
+  end
+  unless File.exist?(xmp)
+    warn "WARN: #{xmp.shellescape} is not a file"
+    next
+  end
+
+  description = File.read(xmp).match(%r{description>(.*)</})[1]
+
+  `exiftool -description=#{description.shellescape} #{file.shellescape}`
+  warn "WARN: unable to add description to #{file.shellescape}" unless $? == 0
+end

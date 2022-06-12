@@ -1,0 +1,53 @@
+#! /usr/bin/env python3
+
+# references
+# - use `-api quicktimeutc` for `exiftool`
+#   - https://exiftool.org/forum/index.php?topic=10070.0
+#   - apparently not all cameras use UTC in quicktime files like the spec says.
+#     iphones appear to.
+# - https://exiftool.org/TagNames/EXIF.html
+#   - CreationDate isn't listed, but the current (2022 jun 8) .mov files for
+#     live photos from my iphone xs has it, and it's the only field for those
+#     files that has the creation date with an offset (not in utc). this matters
+#     when the live photo was taken in a different time zone than the one i'm in
+#     when i run this script.
+
+
+import datetime
+import os
+import re
+import subprocess
+import sys
+
+
+def run(command):
+    out = subprocess.run(command, check=True, capture_output=True, text=True)
+    if out.stdout:
+        return out.stdout.split(":")[1].strip()
+
+
+def get_date(path):
+    if path.lower().endswith(".mov"):
+        out = run(["exiftool", "-CreationDate", "-d", "%Y%m%d_%H%M%S", path])
+        if out:
+            return out
+
+    out = run(
+        ["exiftool", "-CreateDate", "-d", "%Y%m%d_%H%M%S", "-api", "quicktimeutc", path]
+    )
+    if out:
+        return out
+
+    match = re.search(r"([0-9]{8})[^0-9]([0-9]{6})", os.path.basename(path))
+    if match is not None:
+        return match.group(1) + "_" + match.group(2) + "_filename"
+
+    return datetime.datetime.fromtimestamp(os.path.getmtime(path)).strftime(
+        "%Y%m%d_%H%M%S_mtime"
+    )
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print(sys.stderr, "USAGE:", sys.argv[0], "<path>")
+    print(get_date(sys.argv[1]))

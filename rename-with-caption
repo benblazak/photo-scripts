@@ -1,9 +1,12 @@
 #! /usr/bin/env ruby
 # frozen_string_literal: true
 
+# rename the given file based on the `description` field in its exif data
+#
 # ## example
+#
 # ```
-# rename-video-with-caption *.mov
+# rename-with-caption *.mov
 # ```
 #
 # - uses the `description` exif field to make `name.mov` into
@@ -18,12 +21,16 @@ ARGV.each do |file|
   dir = File.dirname(file)
 
   unless File.exist?(file)
-    warn "WARN: #{file.shellescape} is not a file"
+    warn "WARNING: #{file.shellescape} is not a file"
     next
   end
 
-  description = `exiftool -description #{file.shellescape}`.match(/: (.*)/)[1]
-  warn "WARN: could not get description from #{file.shellescape}" unless $? == 0
+  match = `exiftool -description #{file.shellescape}`.match(/: (.*)/)
+  unless $? == 0 && match
+    warn "INFO: could not get description from #{file.shellescape}"
+    next
+  end
+  description = match[1]
 
   File.rename file, File.join(dir, "#{base} - #{description}#{ext}")
 end

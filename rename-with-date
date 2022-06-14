@@ -2,7 +2,6 @@
 
 # rename the given files
 #
-# notes
 # - will not rename files that begin with `.`, `-`, or `_`, or file that look
 #   like they've already been renamed
 #

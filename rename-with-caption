@@ -16,14 +16,14 @@
 require 'shellwords'
 
 ARGV.each do |file|
-  ext = File.extname(file)
-  base = File.basename(file, ext).gsub(/ *- .*/, '')
-  dir = File.dirname(file)
-
   unless File.exist?(file)
     warn "WARNING: #{file.shellescape} is not a file"
     next
   end
+
+  ext = File.extname(file)
+  base = File.basename(file, ext).gsub(/ *- .*/, '')
+  dir = File.dirname(file)
 
   match = `exiftool -description #{file.shellescape}`.match(/: (.*)/)
   unless $? == 0 && match

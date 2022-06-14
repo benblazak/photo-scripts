@@ -1,26 +1,82 @@
 #! /usr/bin/env python3
 
+# references
+# - use `-api quicktimeutc` for `exiftool`
+#   - https://exiftool.org/forum/index.php?topic=10070.0
+#   - apparently not all cameras use UTC in quicktime files like the spec says.
+#     iphones appear to.
+# - https://exiftool.org/TagNames/EXIF.html
+#   - CreationDate isn't listed, but the current (2022 jun 8) .mov files for
+#     live photos from my iphone xs has it, and it's the only field for those
+#     files that has the creation date with an offset (not in utc). this matters
+#     when the live photo was taken in a different time zone than the one i'm in
+#     when i run this script.
+
+import datetime
 import os
 import re
 import shutil
 import subprocess
+import sys
 
 
 def run(command):
     out = subprocess.run(command, check=True, capture_output=True, text=True)
-    return out.stdout.strip()
+    if out.stdout:
+        return out.stdout.split(":")[1].strip()
+
 
 def get_date(path):
-    out = run([os.path.join(os.path.dirname(__file__), 'get-date'), path])
-    return out
+    if not os.path.exists(path):
+        print("ERROR:", path, "does not exist", file=sys.stderr)
+        exit(1)
+
+    dir = os.path.dirname(path)
+    base, ext = os.path.splitext(os.path.basename(path))
+
+    xmp = os.path.join(dir, base + ".xmp")
+    if (
+        not os.path.exists(xmp)
+        and (match := re.match("IMG_[a-zA-Z]+([0-9]+)", base)) is not None
+    ):
+        xmp = os.path.join(dir, "IMG_" + match[1] + ".xmp")
+    if os.path.exists(xmp):
+        with open(xmp) as f:
+            if match := re.search(r"DateCreated>(.*)</", f.read()):
+                return datetime.datetime.fromisoformat(match[1]).strftime(
+                    "%Y%m%d_%H%M%S"
+                )
+
+    if path.lower().endswith(".mov"):
+        out = run(["exiftool", "-CreationDate", "-d", "%Y%m%d_%H%M%S", path])
+        if out:
+            return out
+
+    out = run(
+        ["exiftool", "-CreateDate", "-d", "%Y%m%d_%H%M%S", "-api", "quicktimeutc", path]
+    )
+    if out:
+        return out
+
+    match = re.match(r"([0-9]{8})[^0-9]([0-9]{6})", base)
+    if match is not None:
+        return match.group(1) + "_" + match.group(2) + "_filename"
+
+    return datetime.datetime.fromtimestamp(os.path.getmtime(path)).strftime(
+        "%Y%m%d_%H%M%S_mtime"
+    )
 
 
-if __name__ == '__main__':
-    with open('./_rename.txt', 'w') as log:
-        for root,dirs,files in os.walk('.', topdown=True):
+if __name__ == "__main__":
+    with open("./_rename.txt", "w") as log:
+        for root, dirs, files in os.walk(".", topdown=True):
             ds = []
             for d in dirs:
-                if d[0] in ('.', '-', '_',):
+                if d[0] in (
+                    ".",
+                    "-",
+                    "_",
+                ):
                     pass
                 else:
                     ds.append(d)
@@ -28,9 +84,13 @@ if __name__ == '__main__':
 
             fs = []
             for f in files:
-                if f[0] in ('.', '-', '_',):
+                if f[0] in (
+                    ".",
+                    "-",
+                    "_",
+                ):
                     pass
-                elif re.match(r'([0-9]{8})[^0-9]([0-9]{6})', f):
+                elif re.match(r"([0-9]{8})[^0-9]([0-9]{6})", f):
                     pass
                 else:
                     fs.append(f)
@@ -38,8 +98,7 @@ if __name__ == '__main__':
 
             for f in files:
                 path = os.path.join(root, f)
-                dest = os.path.join(root, get_date(path)+'__'+f)
+                dest = os.path.join(root, get_date(path) + "__" + f)
 
-                print(path, '->', dest, file=log)
+                print(path, "->", dest, file=log)
                 shutil.move(path, dest)
-

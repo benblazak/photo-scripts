@@ -29,7 +29,7 @@ def run(command):
 def get_date(path):
     if not os.path.exists(path):
         print("ERROR:", path, "does not exist", file=sys.stderr)
-        exit(1)
+        return
 
     dir = os.path.dirname(path)
     base, ext = os.path.splitext(os.path.basename(path))

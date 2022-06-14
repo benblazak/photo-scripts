@@ -3,7 +3,10 @@
 
 # copy `description` from the xmp file to the given file
 #
-# - each file must have a .xmp with the same root filename
+# the xmp file used is
+# - the xmp file with the same root filename
+# - or if that doesn't exist, but the filename root looks like "IMG_E0011", then
+#   the xmp file that looks like "IMG_0011"
 #
 # ## example
 #
@@ -14,13 +17,17 @@
 require 'shellwords'
 
 ARGV.each do |file|
-  ext = File.extname(file)
-  base = File.basename(file, ext)
-  xmp = "#{base}.xmp"
-
   unless File.exist?(file)
     warn "WARNING: #{file.shellescape} is not a file"
     next
+  end
+
+  ext = File.extname(file)
+  base = File.basename(file, ext)
+
+  xmp = "#{base}.xmp"
+  if !File.exist?(xmp) && (match = base.match(/IMG_[[:alpha:]]+([[:digit:]]+)/))
+    xmp = "IMG_#{match[1]}.xmp"
   end
   unless File.exist?(xmp)
     warn "WARNING: #{xmp.shellescape} is not a file"
@@ -34,7 +41,7 @@ ARGV.each do |file|
   end
   description = match[1]
 
-  `exiftool -overwrite_original -description=#{description.shellescape} #{file.shellescape}`
+  `exiftool -preserve -overwrite_original -description=#{description.shellescape} #{file.shellescape}`
   unless $? == 0
     warn "WARN: unable to add description to #{file.shellescape}"
     next

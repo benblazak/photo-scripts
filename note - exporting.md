@@ -1,3 +1,25 @@
+- for unedited videos that we want to rename using caption
+  - export originals from mac photos, with xmp data file
+  - use script to copy caption from xmp file to exif data
+  - use script to rename using caption
+  - use script to rename using date
+  - move to nas
+- for photos
+  - note:
+    - “unedited photos” includes photos that i’ve added a caption to, but made no other changes
+  - export all originals from mac photos, with xmp data file
+  - export edits with “all photos data” from ios via airdrop
+    - look through folders to make sure everything’s all right
+    - move items out of folders, and remove folders
+      - `mv */* .`
+      - `find . -type d -empty -delete`
+      - the original in the folder and the original from mac photos should be identical, so it doesn’t matter which is kept
+  - use script to copy caption from xmp file to exif data
+  - use script to rename using date
+  - move to nas
+
+## notes
+
 at the moment (2022 jun 11)
 
 - there are 4 ways to export things (some of this is based on my current settings)

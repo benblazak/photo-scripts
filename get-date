@@ -27,6 +27,26 @@ def run(command):
 
 
 def get_date(path):
+    if not os.path.exists(path):
+        print("ERROR:", path, "does not exist", file=sys.stderr)
+        exit(1)
+
+    dir = os.path.dirname(path)
+    base, ext = os.path.splitext(os.path.basename(path))
+
+    xmp = os.path.join(dir, base + ".xmp")
+    if (
+        not os.path.exists(xmp)
+        and (match := re.match("IMG_[a-zA-Z]+([0-9]+)", base)) is not None
+    ):
+        xmp = os.path.join(dir, "IMG_" + match[1] + ".xmp")
+    if os.path.exists(xmp):
+        with open(xmp) as f:
+            if match := re.search(r"DateCreated>(.*)</", f.read()):
+                return datetime.datetime.fromisoformat(match[1]).strftime(
+                    "%Y%m%d_%H%M%S"
+                )
+
     if path.lower().endswith(".mov"):
         out = run(["exiftool", "-CreationDate", "-d", "%Y%m%d_%H%M%S", path])
         if out:
@@ -38,7 +58,7 @@ def get_date(path):
     if out:
         return out
 
-    match = re.search(r"([0-9]{8})[^0-9]([0-9]{6})", os.path.basename(path))
+    match = re.match(r"([0-9]{8})[^0-9]([0-9]{6})", base)
     if match is not None:
         return match.group(1) + "_" + match.group(2) + "_filename"
 

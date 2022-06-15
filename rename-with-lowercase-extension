@@ -1,0 +1,21 @@
+#! /usr/bin/env ruby
+# frozen_string_literal: true
+
+# rename the given files with a lowercase extension
+
+require 'shellwords'
+
+ARGV.each do |file|
+  unless File.exist?(file)
+    warn "WARNING: #{file.shellescape} is not a file"
+    next
+  end
+
+  ext = File.extname(file)
+  base = File.basename(file, ext)
+  dir = File.dirname(file)
+
+  if (ext = ext.downcase!)
+    File.rename file, File.join(dir, "#{base}#{ext}")
+  end
+end

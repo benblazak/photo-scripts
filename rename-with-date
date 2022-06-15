@@ -1,0 +1,14 @@
+#! /usr/bin/env python3
+
+# maybe rename the given files to begin with their creation date
+
+import sys
+
+from pathlib import Path
+
+from util import maybe_rename
+
+for path in sys.argv[1:]:
+    path = Path(path)
+    if (dest := maybe_rename(path)) is not None:
+        path.rename(dest)

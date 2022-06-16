@@ -24,10 +24,11 @@ ARGV.each do |file|
 
   ext = File.extname(file)
   base = File.basename(file, ext)
+  dir = File.dirname(file)
 
-  xmp = "#{base}.xmp"
+  xmp = File.join(dir, "#{base}.xmp")
   if !File.exist?(xmp) && (match = base.match(/IMG_[[:alpha:]]+([[:digit:]]+)/))
-    xmp = "IMG_#{match[1]}.xmp"
+    xmp = File.join(dir, "IMG_#{match[1]}.xmp")
   end
   unless File.exist?(xmp)
     warn "WARNING: #{xmp.shellescape} is not a file"

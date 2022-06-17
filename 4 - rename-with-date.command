@@ -1,5 +1,10 @@
 #! /usr/bin/env bash
 
+# notes
+# - we have to do xmp files separately (and second) because otherwise
+#   `rename-with-date` won't be able to find the xmp file to use for renaming
+#   the other files (since the name will have changed)
+#
 # references
 # - https://stackoverflow.com/questions/1489277/how-to-use-prune-option-of-find-in-sh
 

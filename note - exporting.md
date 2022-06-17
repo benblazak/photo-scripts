@@ -1,10 +1,12 @@
+## process
+
 - for unedited videos that we want to rename using caption
   - export originals from mac photos, with xmp data file
   - use script to copy caption from xmp file to exif data
   - use script to rename using caption
   - use script to rename using date
   - move to nas
-- for photos
+- for photos and videos
   - note:
     - “unedited photos” includes photos that i’ve added a caption to, but made no other changes
   - export all originals from mac photos, with xmp data file

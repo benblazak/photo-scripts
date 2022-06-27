@@ -9,7 +9,7 @@ cd "$dir"
 
 find .. -not -path '*/.*'  -not -path '*/-*'  -not -path '*/_*' \
     -type f -not -iname '*.xmp' -not -iname '*.aae' \
-    -exec ./rename-with-caption {} \+
+    -exec ./rename-with-caption {} +
 
 echo
 echo done

@@ -9,7 +9,7 @@ cd "$dir"
 
 find .. -not -path '*/.*'  -not -path '*/-*'  -not -path '*/_*' \
     -type f -not -iname '*.xmp' -not -iname '*.aae' \
-    -exec ./copy-caption-from-xmp {} \+
+    -exec ./copy-caption-from-xmp {} +
 
 echo
 echo done

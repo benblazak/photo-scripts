@@ -9,7 +9,7 @@ cd "$dir"
 
 find .. -not -path '*/.*'  -not -path '*/-*'  -not -path '*/_*' \
     -type f \
-    -exec ./rename-with-lowercase-extension {} \+
+    -exec ./rename-with-lowercase-extension {} +
 
 echo
 echo done

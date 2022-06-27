@@ -14,10 +14,10 @@ cd "$dir"
 
 find .. -not -path '*/.*'  -not -path '*/-*'  -not -path '*/_*' \
     -type f -not -iname '*.xmp' \
-    -exec ./rename-with-date {} \+
+    -exec ./rename-with-date {} +
 find .. -not -path '*/.*'  -not -path '*/-*'  -not -path '*/_*' \
     -type f -iname '*.xmp' \
-    -exec ./rename-with-date {} \+
+    -exec ./rename-with-date {} +
 
 echo
 echo done

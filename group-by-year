@@ -1,0 +1,24 @@
+#! /usr/bin/env ruby
+# frozen_string_literal: true
+
+# move each file that begins with a year to a folder named after the year
+
+require 'shellwords'
+
+ARGV.each do |file|
+  unless File.exist?(file)
+    warn "WARNING: #{file.shellescape} is not a file"
+    next
+  end
+
+  ext = File.extname(file)
+  base = File.basename(file, ext)
+  dir = File.dirname(file)
+
+  next unless base.match(/^[0-9]{4}/)
+
+  year = base[0..3]
+
+  Dir.mkdir File.join(dir, year) unless File.exist?(File.join(dir, year))
+  File.rename file, File.join(dir, year, "#{base}#{ext}")
+end

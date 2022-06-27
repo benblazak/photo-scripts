@@ -10,13 +10,7 @@ cd "$dir"
 
 find .. -not -path '*/.*'  -not -path '*/-*'  -not -path '*/_*' \
     -maxdepth 1 -type f \
-    -exec bash -c '
-        for file do
-            dir=$(basename "$file")
-            dir="../${dir:0:4}"
-            mkdir -p "$dir"
-            mv -i "$file" "$dir"
-        done' bash {} +
+    -exec ./group-by-year {} +
 
 echo
 echo done

@@ -15,6 +15,7 @@ ARGV.each do |file|
   base = File.basename(file, ext)
   dir = File.dirname(file)
 
+  next unless File.file?(file)
   next unless base.match(/^[0-9]{4}/)
 
   year = base[0..3]

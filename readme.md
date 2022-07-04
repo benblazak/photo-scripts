@@ -6,8 +6,13 @@ probably only useful to anyone else as a reference :)
 
 ## to use
 
-- copy the `_scripts` folder into the folder to be acted on
+- copy the scripts folder into the folder to be acted on
+  ```fish
+  git clone git@github.com:benblazak/photo-scripts.git _photo-scripts
+  ```
+  - the initial `_` makes it easier to keep the scripts from acting on themselves
 - any `.command` should act on the enclosing folder (`..`, from the script's perspective)
+  - these are meant to be double-click executed from within finder (on a mac), but they should also work on the command line
 
 ## helpful commands
 

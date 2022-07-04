@@ -1,3 +1,9 @@
+# photo helper scripts
+
+this is a collection of scripts i use to help when exporting photos. it changes over time with my photo exporting needs.
+
+probably only useful to anyone else as a reference :)
+
 ## to use
 
 - copy the `_scripts` folder into the folder to be acted on
@@ -26,31 +32,6 @@
     ```
 
   - this is much faster for large numbers of files, since finder seems to have some per file overhead for showing the transfer status of each file in the gui
-
-- clone scripts from nas, and then pull from mac to sync
-
-  ```fish
-  # clone on mac
-
-  cd /Users/ben/Downloads/photos
-
-  # - using ssh
-  git clone ben@ben-nas.local:"/nas/data/personal/media/by-device/2019-04-30 - iPhone XS/_scripts"
-
-  # - using smb share
-  git clone /Volumes/data/personal/media/by-device/2019-04-30\ -\ iPhone\ XS/_scripts
-
-
-  # pull
-
-  # - using ssh on pi
-  cd /nas/data/personal/media/by-device/2019-04-30\ -\ iPhone\ XS/_scripts
-  git pull ben@ben-mm.local:/Users/ben/Downloads/photos/_scripts
-
-  # - using smb share on mac
-  cd /Volumes/data/personal/media/by-device/2019-04-30 - iPhone XS/_scripts
-  git pull ~/Downloads/photos/_scripts/
-  ```
 
 ## process
 

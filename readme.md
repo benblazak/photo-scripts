@@ -1,3 +1,8 @@
+## to use
+
+- copy the `_scripts` folder into the folder to be acted on
+- any `.command` should act on the enclosing folder (`..`, from the script's perspective)
+
 ## helpful commands
 
 - delete empty directories
@@ -25,13 +30,24 @@
 - clone scripts from nas, and then pull from mac to sync
 
   ```fish
-  # on mac
+  # clone on mac
 
-  # clone
   cd /Users/ben/Downloads/photos
+
+  # - using ssh
+  git clone ben@ben-nas.local:"/nas/data/personal/media/by-device/2019-04-30 - iPhone XS/_scripts"
+
+  # - using smb share
   git clone /Volumes/data/personal/media/by-device/2019-04-30\ -\ iPhone\ XS/_scripts
 
+
   # pull
+
+  # - using ssh on pi
+  cd /nas/data/personal/media/by-device/2019-04-30\ -\ iPhone\ XS/_scripts
+  git pull ben@ben-mm.local:/Users/ben/Downloads/photos/_scripts
+
+  # - using smb share on mac
   cd /Volumes/data/personal/media/by-device/2019-04-30 - iPhone XS/_scripts
   git pull ~/Downloads/photos/_scripts/
   ```
@@ -49,7 +65,7 @@
     - “unedited photos” includes photos that i’ve added a caption to, but made no other changes
   - export edits with “all photos data” from ios via airdrop
     - look through folders to make sure everything’s all right
-      - some "all photos data" exports will have a folder name corresponding to the original file name, and them `IMG_...` files inside.  i think this is due to the way edits are named.
+      - some "all photos data" exports will have a folder name corresponding to the original file name, and them `IMG_...` files inside. i think this is due to the way edits are named.
         - recommend checking that another `IMG_...` with the same number does not exist in the same export, and renaming (the xmp and original file) to use that naming scheme
     - move items out of folders, and remove folders
       ```fish

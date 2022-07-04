@@ -1,2 +1,0 @@
-- copy the  `_scripts` folder into the folder to be acted on
-- any `.command` should act on the enclosing folder (`..`, from the script's perspective)

@@ -12,7 +12,7 @@ probably only useful to anyone else as a reference :)
   ```
   - the initial `_` makes it easier to keep the scripts from acting on themselves
 - any `.command` should act on the enclosing folder (`..`, from the script's perspective)
-  - these are meant to be double-click executed from within finder (on a mac), but they should also work on the command line
+  - these are meant to be double-click executed from within finder (on a mac)
 
 ## helpful commands
 
